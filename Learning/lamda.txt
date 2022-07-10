@@ -1,0 +1,67 @@
+ https://www.baeldung.com/cucumber-java-8-support
+
+1. Overview
+In this quick tutorial, we'll learn how to use Java 8 lambda expressions with Cucumber.
+
+2. Maven Configuration
+First, we will need to add the following dependency to our pom.xml:
+
+<dependency>
+    <groupId>info.cukes</groupId>
+    <artifactId>cucumber-java8</artifactId>
+    <version>1.2.5</version>
+    <scope>test</scope>
+</dependency>
+The cucumber-java8 dependency can be found on Maven Central.
+
+3. Step Definitions Using Lambda
+Next, we will discuss how to write our Step Definitions using Java 8 lambda expressions:
+
+public class ShoppingStepsDef implements En {
+
+    private int budget = 0;
+
+    public ShoppingStepsDef() {
+        Given("I have (\\d+) in my wallet", (Integer money) -> budget = money);
+
+        When("I buy .* with (\\d+)", (Integer price) -> budget -= price);
+
+        Then("I should have (\\d+) in my wallet", (Integer finalBudget) ->
+          assertEquals(budget, finalBudget.intValue()));
+    }
+}
+We used a simple shopping feature as an example:
+
+Given("I have (\\d+) in my wallet", (Integer money) -> budget = money);
+Notice how:
+
+In this step we set the initial budget, we have one parameter money with type Integer
+As we are using one statement we didn't need curly braces
+4. Test Scenario
+Finally, let's take a look at our test scenarios:
+
+Feature: Shopping
+
+    Scenario: Track my budget
+        Given I have 100 in my wallet
+        When I buy milk with 10
+        Then I should have 90 in my wallet
+
+    Scenario: Track my budget
+        Given I have 200 in my wallet
+        When I buy rice with 20
+        Then I should have 180 in my wallet
+And the test configuration:
+
+@RunWith(Cucumber.class)
+@CucumberOptions(features = { "classpath:features/shopping.feature" })
+public class ShoppingIntegrationTest {
+    //
+}
+For more details on the Cucumber Configuration, check Cucumber and Scenario Outline tutorial.
+
+5. Conclusion
+We learned how to use Java 8 lambda expressions with Cucumber.
+
+As always, the full source code is available over on GitHub.
+
